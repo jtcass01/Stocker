@@ -15,7 +15,7 @@ from qdarkstyle import load_stylesheet
 
 # Stocker Library Modules
 from utilities.Logger import Logger
-from windows.Control import Control_Window
+from windows.Control import ControlWindow
 
 class Stocker(object):
     """[summary]"""
@@ -28,10 +28,11 @@ class Stocker(object):
         
         self.generated_windows = {}
 
-        self.open_window(window_class=Control_Window)
+        # Open initial window.
+        self.open_window(window_class=ControlWindow)
 
     def open_window(self, window_class: Callable[[], QMainWindow]) -> None:
-        """[summary]
+        """Opens a window class and displays it.
 
         Args:
             window_class (Callable[[], QMainWindow]): [description]"""
@@ -58,7 +59,6 @@ if __name__ == "__main__":
         Logger.console_log(message="Stocker is starting in verbose mode", message_type=Logger.MESSAGE_TYPE.STATUS)
 
     app = QApplication(argv)
-    Stocker(verbose=arguments.verbose)
+    stocker = Stocker(verbose=arguments.verbose)
     app.setStyleSheet(load_stylesheet(qt_api='pyqt5'))
-    exit_response = app.exec_()
-    exit(exit_response)
+    exit(app.exec_())
