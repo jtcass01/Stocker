@@ -1,2 +1,2 @@
 # Stocker
-Stock Social Media App
+Equity Tracking System
