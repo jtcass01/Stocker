@@ -7,7 +7,8 @@ __email__ = "jacobtaylorcassady@outlook.com"
 from threading import Thread
 from time import time
 
-from utilities.Logger import Logger
+from StatusLogger import Logger, Message
+
 from utilities.time_util import pseudo_realtime_timestep
 
 class PriceChecker(Thread):
@@ -21,7 +22,7 @@ class PriceChecker(Thread):
         self.running = True
         Logger.verbose_console_log(verbose=self.verbose,
                                    message=str(type(self)) + " is running...",
-                                   message_type=Logger.MESSAGE_TYPE.STATUS)
+                                   message_type=Message.MESSAGE_TYPE.STATUS)
 
         while self.running:
             epoch_start_time = time()

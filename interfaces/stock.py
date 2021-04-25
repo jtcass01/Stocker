@@ -1,7 +1,8 @@
 from time import sleep
-from utilities.Logger import Logger
+
 from pandas import DataFrame
 from yahoo_fin.stock_info import get_live_price, get_data
+from StatusLogger import Logger, Message
 
 def get_stock_price(symbol: str) -> float:
     """[summary]
@@ -16,7 +17,7 @@ def get_stock_price(symbol: str) -> float:
         return price
     except Exception as error:
         Logger.console_log(message="Exception {} encountered when attempting to get price for symbol {}. Sleeping and trying again.".format(error, symbol),
-                           message_type=Logger.MESSAGE_TYPE.MINOR_FAIL)
+                           message_type=Message.MESSAGE_TYPE.MINOR_FAIL)
         sleep(120)
         return get_stock_price(symbol=symbol)
         

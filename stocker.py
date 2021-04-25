@@ -6,7 +6,6 @@ __email__ = "jacobtaylorcassady@outlook.com"
 
 # Built-in Modules
 from threads.prices import PriceChecker
-from utilities.Logger import Logger
 from argparse import ArgumentParser
 from sys import argv, exit
 from typing import Callable, Dict, Any
@@ -19,10 +18,10 @@ from time import sleep
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from qdarkstyle import load_stylesheet
 from pandas import DataFrame, read_csv
+from StatusLogger import Logger, Message
 
 # Stocker Library Modules
 from utilities.Cipher import initialize_lock_and_key_ciphers
-from utilities.Logger import Logger
 from accounts.binance_us_account import BinanceAccount
 from accounts.coinbase_account import CoinbaseAccount
 from interfaces.mint import Mint
@@ -47,8 +46,9 @@ class Stocker(object):
 
         Args:
             verbose (bool, optional): [description]. Defaults to False."""
-        if arguments.verbose:
-            Logger.console_log(message="Stocker is initializing in verbose mode", message_type=Logger.MESSAGE_TYPE.STATUS)
+        Logger.verbose_console_log(verbose=arguments.verbose,
+                                   message="Stocker is initializing in verbose mode", 
+                                   message_type=Message.MESSAGE_TYPE.STATUS)
 
         self.verbose = verbose
         self.ciphers: dict = initialize_lock_and_key_ciphers()
@@ -84,7 +84,7 @@ class Stocker(object):
             window_class (Callable[[], QMainWindow]): [description]"""
         Logger.verbose_console_log(verbose=self.verbose,
                                    message=str(type(self)) + " is opening window: " + str(window_class),
-                                   message_type=Logger.MESSAGE_TYPE.STATUS)
+                                   message_type=Message.MESSAGE_TYPE.STATUS)
 
         window = window_class(stocker=self)
 
@@ -190,12 +190,12 @@ class Stocker(object):
             return float(self.binance_account.interface.get_ticker(symbol=coin_name+"USD")['lastPrice'])
         except Exception as error:
             Logger.console_log(message="Exception {} found when attempting to get price from binance. Attempting again through coinbase.".format(error),
-                                message_type=Logger.MESSAGE_TYPE.MINOR_FAIL)
+                                message_type=Message.MESSAGE_TYPE.MINOR_FAIL)
             try:
                 return float(self.coinbase_account.interface.get_buy_price(currency_pair=coin_name+"-USD")['amount'])
             except Exception as error:
                 Logger.console_log(message="Exception {} found when attempting to get price from coinbase. Calling get_crypto_price again.".format(error),
-                                   message_type=Logger.MESSAGE_TYPE.MINOR_FAIL)
+                                   message_type=Message.MESSAGE_TYPE.MINOR_FAIL)
                 sleep(5 * 60)
                 return self.get_crypto_price(coin_name=coin_name)
 

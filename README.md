@@ -91,6 +91,11 @@ pip install python-binance
 pip install coinbase
 ```
 
+- Mint API
+```bash
+pip install mintapi
+```
+
 - Yahoo Finance Stock API
 ```bash
 pip install yahoo-fin

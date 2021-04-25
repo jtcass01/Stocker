@@ -15,10 +15,10 @@ from time import time
 # 3rd party modules
 from pandas import DataFrame, Series
 from numpy import array
+from StatusLogger import Logger, Message
 
 # Stocker Library Modules
 from interfaces.stock import get_stock_price
-from utilities.Logger import Logger
 from utilities.time_util import Stocker_Event
 
 class Holdings(object):
@@ -68,7 +68,7 @@ class Holdings(object):
         """[summary]"""
         Logger.verbose_console_log(verbose=self.stocker.verbose,
                                     message=str(type(self)) + " is updating...",
-                                    message_type=Logger.MESSAGE_TYPE.STATUS)
+                                    message_type=Message.MESSAGE_TYPE.STATUS)
         update_time = time()
 
         self.lock.acquire()
@@ -76,7 +76,7 @@ class Holdings(object):
             coin.price = self.stocker.get_crypto_price(coin_name=coin.coin)
             Logger.verbose_console_log(verbose=self.stocker.verbose,
                                        message="[CRYPTO] " + coin.name + " is currently valued at $" + str(coin.price) + " per coin.",
-                                       message_type=Logger.MESSAGE_TYPE.STATUS)
+                                       message_type=Message.MESSAGE_TYPE.STATUS)
             self.crypto_df = self.crypto_df.append(coin.to_series(update_time=update_time))
             self.crypto_df = self.crypto_df.sort_index()
             
@@ -84,7 +84,7 @@ class Holdings(object):
             stock.price = get_stock_price(symbol=stock_symbol)
             Logger.verbose_console_log(verbose=self.stocker.verbose,
                                        message="[STOCK] " + stock.name + " is currently valued at $" + str(stock.price) + " per share.",
-                                       message_type=Logger.MESSAGE_TYPE.STATUS)
+                                       message_type=Message.MESSAGE_TYPE.STATUS)
             self.stocks_df = self.stocks_df.append(stock.to_series(update_time=update_time))
             self.stocks_df = self.stocks_df.sort_index()
 
@@ -92,7 +92,7 @@ class Holdings(object):
             #checking_account.update()
             Logger.verbose_console_log(verbose=self.stocker.verbose,
                                        message="[CHECKING] " + account_name + " is currently valued at $" + str(checking_account.equity),
-                                       message_type=Logger.MESSAGE_TYPE.STATUS)
+                                       message_type=Message.MESSAGE_TYPE.STATUS)
             self.checking_account_df = self.checking_account_df.append(checking_account.to_series(update_time=update_time))
             self.checking_account_df = self.checking_account_df.sort_index()
 
@@ -104,7 +104,7 @@ class Holdings(object):
 
         Logger.verbose_console_log(verbose=self.stocker.verbose,
                                    message=str(type(self)) + " is finished updating.",
-                                   message_type=Logger.MESSAGE_TYPE.SUCCESS)
+                                   message_type=Message.MESSAGE_TYPE.SUCCESS)
 
         if not self.initial_update.is_set():
             self.initial_update.set()
@@ -121,7 +121,7 @@ class Holdings(object):
 
         Logger.verbose_console_log(verbose=self.stocker.verbose,
                                    message=str(type(self)) + " is calculating the equity of holding_type: " + str(holding_type),
-                                   message_type=Logger.MESSAGE_TYPE.STATUS)
+                                   message_type=Message.MESSAGE_TYPE.STATUS)
 
         equity: float = 0.
 
@@ -139,7 +139,7 @@ class Holdings(object):
 
         Logger.verbose_console_log(verbose=self.stocker.verbose,
                                    message=str(type(self)) + " equity of holding_type: " + str(holding_type) + " = " + "$%.2f" % equity,
-                                   message_type=Logger.MESSAGE_TYPE.SUCCESS)
+                                   message_type=Message.MESSAGE_TYPE.SUCCESS)
 
         return equity
 
@@ -175,11 +175,11 @@ class Holdings(object):
 
             Logger.verbose_console_log(verbose=verbose,
                                        message=str(holding_name) + " has a " + str(equity_type) + " value of " + "$%.2f" % holding_equity,
-                                       message_type=Logger.MESSAGE_TYPE.STATUS)
+                                       message_type=Message.MESSAGE_TYPE.STATUS)
 
         Logger.verbose_console_log(verbose=verbose,
                                    message=str(Holdings) + " has calculated a total " + str(equity_type) + " equity of " + "$%.2f" % total_equity,
-                                   message_type=Logger.MESSAGE_TYPE.SUCCESS)
+                                   message_type=Message.MESSAGE_TYPE.SUCCESS)
 
         return total_equity
 
@@ -206,6 +206,14 @@ class Holdings(object):
 
 
     def calculate_holding_equities(self, holding_type: Holdings.HOLDING_TYPE, times: array) -> array:
+        """[summary]
+
+        Args:
+            holding_type (Holdings.HOLDING_TYPE): [description]
+            times (array): [description]
+
+        Returns:
+            array: [description]"""
         return array([self.sum_equities(holding_type=holding_type, time=time) for time in times])
 
     def get_times(self, holding_type: Holdings.HOLDING_TYPE) -> array:
@@ -240,14 +248,29 @@ class Holdings(object):
 
         @abstractclassmethod
         def __str__(self) -> str:
+            """[summary]
+
+            Returns:
+                str: [description]"""
             pass
 
         @abstractstaticmethod
         def to_series(self, update_time: float) -> Series:
+            """[summary]
+
+            Args:
+                update_time (float): [description]
+
+            Returns:
+                Series: [description]"""
             pass
 
         @abstractclassmethod
         def get_columns() -> List[str]:
+            """[summary]
+
+            Returns:
+                List[str]: [description]"""
             pass
 
     class Cryptocoin(Holding):
@@ -349,6 +372,10 @@ class Holdings(object):
 
         @staticmethod
         def get_columns() -> List[str]:
+            """[summary]
+
+            Returns:
+                List[str]: [description]"""
             return ["datetime", "stock", "cost_basis_per_share", "quantity", "price"]
 
     class CheckingAccount(Holding):
@@ -371,6 +398,10 @@ class Holdings(object):
 
         @staticmethod
         def get_columns() -> List[str]:
+            """[summary]
+
+            Returns:
+                List[str]: [description]"""
             return ["datetime", "account_name", "equity"]
 
         def to_series(self, update_time: float) -> Series:
@@ -407,6 +438,7 @@ class Holdings(object):
 
     @unique
     class HOLDING_TYPE(Enum):
+        """[summary]"""
         ALL = "all"
         STOCK = "stock"
         CRYPTOCURRENCY = "crypto"
