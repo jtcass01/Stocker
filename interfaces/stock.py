@@ -1,3 +1,5 @@
+from time import sleep
+from utilities.Logger import Logger
 from pandas import DataFrame
 from yahoo_fin.stock_info import get_live_price, get_data
 
@@ -9,7 +11,15 @@ def get_stock_price(symbol: str) -> float:
 
     Returns:
         DataFrame: [description]"""
-    return get_live_price(symbol)
+    try:
+        price: float = get_live_price(symbol)
+        return price
+    except Exception as error:
+        Logger.console_log(message="Exception {} encountered when attempting to get price for symbol {}. Sleeping and trying again.".format(error, symbol),
+                           message_type=Logger.MESSAGE_TYPE.MINOR_FAIL)
+        sleep(120)
+        return get_stock_price(symbol=symbol)
+        
 
 def get_stock_data(symbol: str) -> DataFrame:
     """[summary]

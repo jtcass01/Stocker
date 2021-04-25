@@ -13,7 +13,6 @@ from os import getcwd, makedirs
 from os.path import sep, abspath
 from termcolor import colored
 
-
 class Logger(object):
     """"""
     def __init__(self, file_log: bool = True, log_location: Union[str, None] = None) -> None:

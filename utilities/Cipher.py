@@ -52,22 +52,16 @@ class Cipher(ABC):
 
     @staticmethod
     def generate_random_key(key_base: str) -> str:
+        """[summary]
+
+        Args:
+            key_base (str): [description]
+
+        Returns:
+            str: [description]"""
         key_list = [char for char in key_base]
         shuffle(key_list)
         return "".join(key_list)
-
-    @staticmethod
-    def encode_file(file_path: str, data_cipher: Cipher, file_name_cipher: Cipher) -> None:
-        with open(file_path, "r") as encoded_file:
-            encoded_file_data = encoded_file.read()
-
-        file_name = file_path.split(sep=sep)[-1]
-        encoded_data = self.encode(message=file_data)
-        encoded_file_name = self.encode(message=file_name)
-        encoded_file_path = join(RESOURCE_DIRECTORY, encoded_file_name)
-
-        with open(encoded_file_path, "w+") as encoded_file:
-            encoded_file.write(encoded_data)
 
     def decode_file(self, file_path: str) -> None:
         """[summary]
