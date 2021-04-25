@@ -100,7 +100,7 @@ pip install yahoo-fin
 This project is still in the early stages of development.  Since data like stock holdings and crypto holdings are currently static and held in encrypted files not included in this repository; it is not likely this application can be used by anyone without reverse engineering quite a bit of the code.  It surely won't run as is.  If you are interested in the schema for resource files to edit this application to track your investments; please reach out.
 
 ### Equity Tracker Display Current State
-<img src="images/equity_tracker_display_current_state.png" alt="Logo">
+<img src="images/equity_tracker_display_current_state.png" alt="equity_tracker_display_current_state">
 
 
 <!-- CONTRIBUTING -->
