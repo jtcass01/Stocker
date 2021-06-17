@@ -26,6 +26,14 @@ class PriceChecker(Thread):
 
         while self.running:
             epoch_start_time = time()
-            self.stocker.holdings.update()
+            self.stocker.holdings.update(binance_account = self.stocker.binance_account, 
+                                         coinbase_account = self.stocker.coinbase_account, 
+                                         verbose = self.stocker.verbose)
             pseudo_realtime_timestep(epoch_start_time=epoch_start_time,
                                      timestep=1/self.rate)
+
+    def stop(self) -> None:
+        self.running = False
+        Logger.verbose_console_log(verbose=self.verbose,
+                                   message=str(type(self)) + " is stopping...",
+                                   message_type=Message.MESSAGE_TYPE.STATUS)

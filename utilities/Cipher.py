@@ -14,7 +14,7 @@ from os import listdir
 from json import loads, load
 from argparse import ArgumentParser
 from random import shuffle
-from typing import Union, Dict
+from typing import Union, Dict, Any
 
 LOCK_AND_KEY_DIRECTORY = join(dirname(__file__), "..", "lock_and_key")
 RESOURCE_DIRECTORY = join(dirname(__file__), "..", "resources")
@@ -219,6 +219,24 @@ class Test_VigenereCipher(TestCase):
         decoded_message = test_cipher.decode(message=encoded_message)
 
         assert test_message == decoded_message
+
+
+def load_json_resource(file_name_cipher: VigenereCipher, data_cipher: VigenereCipher, resource_file_name: str) -> Dict[str, Any]:
+    """[summary]
+
+    Args:
+        resource_file_name (str): [description]
+
+    Returns:
+        Dict[str, Any]: [description]"""
+    encoded_resource_file_name = file_name_cipher.encode(resource_file_name)
+
+    with open(join(RESOURCE_DIRECTORY, encoded_resource_file_name), "r") as encoded_resource_file:
+        encoded_resource_data = encoded_resource_file.read()
+
+    decoded_resource_data = data_cipher.decode(encoded_resource_data)
+
+    return loads(decoded_resource_data)
 
 
 def initialize_lock_and_key_ciphers() -> Dict[str, VigenereCipher]:
